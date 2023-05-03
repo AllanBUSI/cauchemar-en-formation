@@ -19,6 +19,7 @@ import {
   import axios from 'axios';
   import qs from 'qs';
   import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import { useRouter } from 'next/router';
   
   export default function Register() {
     const [showPassword, setShowPassword] = useState(false);
@@ -31,6 +32,8 @@ import {
         confirmPassword: ''
     })
     const toast = useToast()
+
+    const router = useRouter()
 
 
     const onChange = (e: any) => {
@@ -67,29 +70,24 @@ import {
 
             // execute la route
             const response = await axios.request(config)
-
-            // je récupère les données de mon api
-            console.log(response.data.data)
-
-            // verif
-
-            // requete http -> symfony 
-            
+      
             toast({
-                title: 'Account created.',
-                description: "We've created your account for you.",
+                title: 'Votre compte est créer',
+                description: "Direction votre dashboard",
                 status: 'success',
                 duration: 3000,
                 isClosable: true,
             })
             
             setIsLoading(false)
+
+            document.cookie = "token="+response.data.data.jwt+";path=/;"
+
+            router.push('/dashboard')
             
         } catch (err:any) {
             
             setIsLoading(false)
-
-            console.log(err.response.data)
 
             toast({
                 title: err.response.data.data.titleError,
